@@ -1,0 +1,128 @@
+Cách tạo Binary Tree cơ bản (Thêm (BST), Xóa(BST), Search(BST), Duyệt In-Order)
+
+using System;
+
+class Node
+{
+    public int Value;
+    public Node Left, Right;
+
+    public Node(int value)
+    {
+        Value = value;
+        Left = Right = null;
+    }
+}
+
+class BinaryTree
+{
+    public Node Root;
+
+    public BinaryTree()
+    {
+        Root = null;
+    }
+
+    // Thêm nút mới (trong BST)
+    public void Insert(int value)
+    {
+        Root=InsertRec(Root,value);
+    }
+
+    private Node InsertRec(Node root, int value)
+    {
+        if(root==null)
+        {
+            root=new Node(value);
+            return root;
+        }
+        if(value<root.Value)
+            root.Left=InsertRec(root.Left,value);
+        else if(value>root.Value)
+            root.Right=InsertRec(root.Right,value);
+            return root;
+    }
+
+    // Duyệt cây theo thứ tự trung (In-Order Traversal)
+    public void InOrder(Node node)
+    {
+       if(node!=null){
+           InOrder(node.Left);
+           Console.Write(node.Value+" ");
+           InOrder(node.Right);
+       }
+    }
+
+    // Tìm kiếm nút trong BST
+    public bool Search(int value)
+    {
+        return SearchRec(Root,value);
+    }
+
+    private bool SearchRec(Node root, int value)
+    {
+        if(root==null) return false;
+        if(root.Value==value) return true;
+        if(value<root.Value){
+            return SearchRec(root.Left,value);
+        }else{
+            return SearchRec(root.Right,value);
+        }
+    }
+    public void Delete(int value){
+        Root = DeleteRec(Root,value);
+    }
+    private Node DeleteRec(Node root,int value){
+        if(root==null) return root;
+        if(value<root.Value){
+            root.Left=DeleteRec(root.Left,value);
+        }else if(value>root.Value){
+            root.Right=DeleteRec(root.Right,value);
+        }else{
+            if(root.Right==null) return root.Left;
+            else if(root.Left==null) return root.Right;
+            root.Value = MinValue(root.Right);
+            root.Right=DeleteRec(root.Right,root.Value);
+        }
+        return root;
+    }
+    private int MinValue(Node root){
+        int min=root.Value;
+        while(root.Left!=null){
+            min=root.Left.Value;
+            root=root.Left; 
+        }
+        return min;
+    }
+}
+
+class HelloWorld
+{
+    static void Main()
+    {
+        BinaryTree tree = new BinaryTree();
+
+        // Thêm các giá trị vào cây
+        tree.Insert(50);
+        tree.Insert(30);
+        tree.Insert(20);
+        tree.Insert(40);
+        tree.Insert(70);
+        tree.Insert(60);
+        tree.Insert(80);
+
+        Console.WriteLine("In-Order Traversal:");
+        tree.InOrder(tree.Root); // Output: 20 30 40 50 60 70 80
+
+        Console.WriteLine("\nSearch for 40: " + tree.Search(40)); // Output: True
+        Console.WriteLine("Search for 90: " + tree.Search(90)); // Output: False
+
+	Console.WriteLine("In-Order Traversal before delete:");
+        tree.InOrder(tree.Root); // Output: 20 30 40 50 60 70 80
+
+        // Xóa một nút lá
+        tree.Delete(20);
+        Console.WriteLine("\nIn-Order Traversal after delete 20:");
+        tree.InOrder(tree.Root); // Output: 30 40 50 60 70 80
+    }
+}
